@@ -1,25 +1,33 @@
 from collections import deque
 
-historique = {
-    "back": deque(['url_D3', 'url_C1', 'url_A8', 'url_A5']),
-    "current": 'url_F',
-    "forward": deque(['url_Z', 'url_alpha1'])
-}
 
-def reculer(hist) :
-    if hist["back"] :
-        hist["forward"].appendleft(hist["current"])
-        hist["current"] = hist["back"].popleft()
-    return hist
+class Historique :
 
-def avancer(hist) :
-    if hist["forward"] :
-        hist["back"].appendleft(hist["current"])
-        hist["current"] = hist["forward"].popleft()
-    return hist
+    def __init__(self, url=None) :
+        self.back = deque()
+        self.current = url
+        self.forward = deque()
 
-def nouvelle_url(hist, url) :
-    hist["back"].appendleft(hist["current"])
-    hist["current"] = url
-    hist["forward"].clear()
-    return hist
+    def nouvelle_url(self, url) :
+        if self.current:
+            self.back.appendleft(self.current)
+        self.current = url
+        self.forward.clear()
+
+    def reculer(self) :
+        if self.back:
+            self.forward.appendleft(self.current)
+            self.current = self.back.popleft()
+
+    def avancer(self) :
+        if self.forward:
+            self.back.appendleft(self.current) 
+            self.current = self.forward.popleft()
+
+    def __repr__(self) :
+        return f"Historique(back={list(self.back)}, current={self.current}, forward={list(self.forward)})"
+
+
+h = Historique("https://www.google.com")
+h.nouvelle_url("https://www.youtube.com")
+print(h) 
